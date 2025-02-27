@@ -1,70 +1,85 @@
 # Завдання 1
-# Створіть наступні класи:
-#  CreditCardPayment – атрибути currency
-#  PayPalPayment – атрибути currency
-#  CryptoPayment – атрибути currency
-# Методи:
-#  pay(amount) – виводить повідомлення
-# o CreditCardPayment – оплата карткою {amount}{currency}
-# o PayPalPayment – оплата PayPal {amount}{currency}
-# o CryptoPayment – оплата криптогаманцем {amount}{currency}
-# Напишіть функцію create_payment() яка запитує у
-# користувача тип рахунку та потрібні атрибути і повертає
-# об’єкт.
-# Створіть декілька рахунків, добавте їх у список та для
-# кожної викличте відповідні методи.
-
-class Payment:
-    def __init__(self, currency):
-        self.currency = currency
-
-    def pay(self, amount):
-        pass
-
-
-class CreditCardPayment(Payment):
-    def pay(self, amount):
-        print(f"Оплата карткою {amount} {self.currency}")
-
-
-class PayPalPayment(Payment):
-    def pay(self, amount):
-        print(f"Оплата PayPal {amount} {self.currency}")
-
-
-class CryptoPayment(Payment):
-    def pay(self, amount):
-        print(f"Оплата криптогаманцем {amount} {self.currency}")
+# Створіть клас Recipe з атрибутами
+#  name – назва страви
+#  ingredients – список продуктів
+#  text – текст рецепту
+#  time – час приготування
+# методи:
+#  __str__(self) – повертає назву страви
+#  __contains__(self, item) – перевіряє чи є інгредієнт в
+# рецепті
+#  __gt__(self, other) – перевіряє чи є час приготування self
+# більшим за other
+#  display_info(self) – виводить всю інформацію про рецепт
+# Створіть декілька рецептів та добавте їх у список.
+# Виведіть назви тих рецептів, які містять інгредієнт томат
+# Виведіть повну інформацію рецепта з найменшим часом
+# приготування, скористайтесь функцією min
+# Приклад рецептів:
+# Recipe("Піца",
+# Домашнє завдання
+#  ["борошно", "вода", "дріжджі", "томат", "сир"],
+#  "Готуємо тісто, додаємо інгредієнти та запікаємо",
+#  30)
+#
+#  Recipe("Салат",
+#  ["томат", "огірок", "зелень", "олія"],
+#  "Нарізаємо овочі, додаємо зелень та поливаємо
+# олією",
+#  10)
+#
+#  Recipe("Суп",
+#  ["вода", "картопля", "морква", "м'ясо"],
+#  "Варимо всі інгредієнти до готовності",
+#  45)
 
 
-def create_payment():
-    payment_type = input("Введіть тип рахунку (CreditCard, PayPal, Crypto): ").strip()
-    currency = input("Введіть валюту: ").strip()
+class Recipe:
+    def __init__(self, name, ingredients, text, time):
+        self.name = name
+        self.ingredients = ingredients
+        self.text = text
+        self.time = time
 
-    payment_classes = {
-        "CreditCard": CreditCardPayment,
-        "PayPal": PayPalPayment,
-        "Crypto": CryptoPayment
-    }
+    def __str__(self):
+        return self.name
 
-    if payment_type not in payment_classes:
-        print("Невідомий тип платежу!")
-        return None
+    def __contains__(self, item):
+        return item in self.ingredients
 
-    return payment_classes[payment_type](currency)
+    def __gt__(self, other):
+        return self.time > other.time
 
+    def __lt__(self, other):
+        return self.time < other.time
 
+    def __repr__(self):
+        return f"Recipe({self.name}, {self.ingredients}, {self.text}, {self.time})"
 
-payments = []
-for i in range(3):
-    payment = create_payment()
-    if payment:
-        payments.append(payment)
+    def display_info(self):
+        print(f"🔹 Назва: {self.name}\n🛒 Інгредієнти: {', '.join(self.ingredients)}\n📜 Рецепт: {self.text}\n⏳ Час: {self.time} хвилин\n")
 
 
-for payment in payments:
-    amount = float(input(f"Введіть суму для {payment.__class__.__name__}: "))
-    payment.pay(amount)
+# Створюємо рецепти
+recipes = [
+    Recipe("Піца", ["борошно", "вода", "дріжджі", "томат", "сир"], "Готуємо тісто, додаємо інгредієнти та запікаємо", 30),
+    Recipe("Салат", ["томат", "огірок", "зелень", "олія"], "Нарізаємо овочі, додаємо зелень та поливаємо олією", 10),
+    Recipe("Суп", ["вода", "картопля", "морква", "м'ясо"], "Варимо всі інгредієнти до готовності", 45)
+]
+
+# Вивести рецепти, що містять "томат"
+print("🍅 Рецепти, які містять томат:")
+for recipe in recipes:
+    if "томат" in recipe:
+        print(f"- {recipe}")
+
+# Знайти рецепт із найменшим часом приготування
+fastest_recipe = min(recipes)
+print("\n⏳ Рецепт із найменшим часом приготування:")
+fastest_recipe.display_info()
+
+
+
 
 
 
