@@ -231,6 +231,8 @@
 
 
 from abc import ABC, abstractmethod
+from random import choice
+
 
 class Robot(ABC):
     def __init__(self, name, battery_level=100, status='off'):
@@ -283,72 +285,132 @@ class Robot(ABC):
 # якщо прибирання вологе то додатково витратити воду.
 # Також зменшує рівень заряду на energy
 
+#
+# class CleaningRobot(Robot):
+#     def __init__(self, name,battery_level=100, status='off', dust_capacity=0, water_capacity=100, cleaning_mode='dry'):
+#         super().__init__(name, battery_level, status)
+#         self.dust_capacity = dust_capacity
+#         self.water_capacity = water_capacity
+#         self.cleaning_mode = cleaning_mode
+#
+#     def info(self):
+#         super().info()
+#         print(f"Ємність контейнеру для пилу: {self.dust_capacity}")
+#         print(f"Рівень заряду батареї: {self.battery_level}")
+#         print(f"Тип прибирання: {self.cleaning_mode}")
+#         print(f"Ємність контейнеру для води: {self.water_capacity}")
+#
+#     def turn_on(self):
+#         if self.dust_capacity == 100 or self.water_capacity == 0:
+#             print("Контейнер для пилу повний або контейнер для води порожній")
+#         else:
+#             super().turn_on()
+#
+#     def empty_dustbin(self):
+#         self.dust_capacity = 0
+#
+#     def fill_water(self):
+#         self.water_capacity = 100
+#
+#     def swap_mode(self):
+#         if self.cleaning_mode == 'wet':
+#             self.cleaning_mode = 'dry'
+#         else:
+#             self.cleaning_mode = 'wet'
+#
+#     def clean(self, energy, dust, water=None):
+#         if self.status == 'off':
+#             print('Robot is off')
+#             return
+#
+#         if self.battery_level < energy:
+#             print("Недостатньо заряду")
+#
+#
+#
+#
+#         if self.dust_capacity + dust > 100:
+#             print("Контейнер для пилу повний")
+#             return
+#
+#
+#         if self.cleaning_mode == 'wet':
+#             if water is None:
+#                 print("Води не вистачить")
+#                 return
+#             if self.water_capacity < water:
+#                 print("Води не вистачить")
+#                 return
+#
+#
+#             self.water_capacity -= water
+#             self.dust_capacity += dust
+#             self.battery_level -= energy
+#
+#             if self.cleaning_mode == 'wet':
+#                 self.water_capacity -= water
+#
+# robot2 = CleaningRobot('abc', 90)
+# robot2.turn_on()
+# robot2.clean(10, 20, 50)
+# robot2.info()
 
-class CleaningRobot(Robot):
-    def __init__(self, name,battery_level=100, status='off', dust_capacity=0, water_capacity=100, cleaning_mode='dry'):
+# Завдання 4
+# Створіть дочірній клас AssistantRobot
+# Додаткові атрибути:
+#  tasks – список завдань(за замовчуванням порожній)
+#  current_task – поточне завдання(за замовчуванням None)
+# Методи:
+#  info() – додатково виводить інформацію про робота
+#  add_task(task) – додає завдання до списку
+#  change_task() – змінює поточне завдання, виводить на
+# екран список завдань та просить користувача вибрати
+# одне з них
+#  execute_task() – виконує поточне завдання, видяляє його
+# зі списку, та змінює current_task на наступне
+
+
+class AssistantRobot(Robot):
+    def __init__(self, name, battery_level=100, status='off', tasks=None, current_task=None):
         super().__init__(name, battery_level, status)
-        self.dust_capacity = dust_capacity
-        self.water_capacity = water_capacity
-        self.cleaning_mode = cleaning_mode
+        if tasks is None:
+            tasks = []
+        else:
+            self.tasks = tasks
+        self.current_task = current_task
 
     def info(self):
         super().info()
-        print(f"Ємність контейнеру для пилу: {self.dust_capacity}")
-        print(f"Рівень заряду батареї: {self.battery_level}")
-        print(f"Тип прибирання: {self.cleaning_mode}")
-        print(f"Ємність контейнеру для води: {self.water_capacity}")
+        for task in self.tasks:
+            print(task)
+        print(f"Поточне завдання: {self.current_task}")
 
-    def turn_on(self):
-        if self.dust_capacity == 100 or self.water_capacity == 0:
-            print("Контейнер для пилу повний або контейнер для води порожній")
-        else:
-            super().turn_on()
+    def add_task(self, task):
+        self.tasks.append(task)
 
-    def empty_dustbin(self):
-        self.dust_capacity = 0
-
-    def fill_water(self):
-        self.water_capacity = 100
-
-    def swap_mode(self):
-        if self.cleaning_mode == 'wet':
-            self.cleaning_mode = 'dry'
-        else:
-            self.cleaning_mode = 'wet'
-
-    def clean(self, energy, dust, water=None):
-        if self.status == 'off':
-            print('Robot is off')
+    def change_task(self):
+        if not self.tasks:
+            print("Список завдань порожній")
             return
 
-        if self.battery_level < energy:
-            print("Недостатньо заряду")
+        print("Список завдань: ")
+        for ind, task  in enumerate(self.tasks, start=1):
+            print(f"{ind}. {task}")
 
+        choise = int(input("Виберіть завдання: "))
+        self.current_task = self.tasks[choise - 1]
+        self.tasks.pop(choise - 1)
 
-
-
-        if self.dust_capacity + dust > 100:
-            print("Контейнер для пилу повний")
+    def execute_task(self):
+        if not self.current_task:
+            print("Немає поточного завдання")
             return
 
+        print(f"Виконуємо завдання: {self.current_task}")
+        self.tasks.remove(self.current_task)
 
-        if self.cleaning_mode == 'wet':
-            if water is None:
-                print("Води не вистачить")
-                return
-            if self.water_capacity < water:
-                print("Води не вистачить")
-                return
-
-
-            self.water_capacity -= water
-            self.dust_capacity += dust
-            self.battery_level -= energy
-
-            if self.cleaning_mode == 'wet':
-                self.water_capacity -= water
-
-robot2 = CleaningRobot('abc', 90)
-robot2.turn_on()
-robot2.clean(10, 20, 50)
-robot2.info()
+        if self.tasks:
+            self.current_task = self.tasks[0]
+        else:
+            print('Завдань немає')
+            self.current_task = None
