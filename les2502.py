@@ -34,7 +34,7 @@ class SinglyLinkedList:
         self.tail = new_node
 
 #  push_start(data) – добавити на початку
-    def push_start(self, data):
+    def push_start(self,data):
         new_node =Node(data)
         if self.head is None:
             self.head = new_node
@@ -44,16 +44,28 @@ class SinglyLinkedList:
         new_node.next = self.head
         self.head = new_node
 
+    def pop_start(self):
+        if self.head is None:
+            raise ValueError('List is empty')
+
+        if self.head.next is None:
+            self.head = None
+            self.tail = None
+            return
+
+
+        next_node = self.head.next
+        self.head.next = None
+        self.head = next_node
+
+
 
 data = SinglyLinkedList()
 
 data.push_end(1)
-print(data)
 data.push_end(2)
-print(data)
 data.push_end(3)
-print(data)
 data.push_start(5)
-print(data)
 data.push_start(10)
+data.pop_start()
 print(data)
