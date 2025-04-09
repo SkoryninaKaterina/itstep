@@ -342,3 +342,150 @@ avg_thread.start()
 input_thread.join()
 sum_thread.join()
 avg_thread.join()
+
+
+
+###1
+{
+    "Київ": "Сонячно, 25°C",
+    "Львів": "Дощ, 18°C",
+    "Одеса": "Хмарно, 22°C"
+}
+import socket
+import json
+
+def load_weather_data():
+    with open('weather_data.json', 'r', encoding='utf-8') as file:
+        return json.load(file)
+
+def handle_client(client_socket):
+    city = client_socket.recv(1024).decode('utf-8')
+    weather_data = load_weather_data()
+    forecast = weather_data.get(city, "Невідоме місто")
+    client_socket.send(forecast.encode('utf-8'))
+    client_socket.close()
+
+def main():
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind(('localhost', 5555))
+    server.listen(5)
+    print("Сервер запущено. Очікування підключень...")
+
+    while True:
+        client_socket, addr = server.accept()
+        print(f"Підключено до {addr}")
+        handle_client(client_socket)
+
+if __name__ == "__main__":
+    main()
+import socket
+
+def main():
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect(('localhost', 5555))
+    city = input("Введіть назву міста: ")
+    client.send(city.encode('utf-8'))
+    forecast = client.recv(1024).decode('utf-8')
+    print(f"Прогноз погоди: {forecast}")
+    client.close()
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+#2
+import socket
+
+def handle_client(client1, client2):
+    while True:
+        try:
+            message = client1.recv(1024).decode('utf-8')
+            if not message:
+                break
+            client2.send(message.encode('utf-8'))
+        except:
+            break
+
+def main():
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind(('localhost', 5555))
+    server.listen(2)
+    print("Сервер запущено. Очікування підключень...")
+
+    client1, addr1 = server.accept()
+    print(f"Підключено клієнта 1: {addr1}")
+    client1.send("Ви підключені. Очікування другого клієнта...".encode('utf-8'))
+
+    client2, addr2 = server.accept()
+    print(f"Підключено клієнта 2: {addr2}")
+    client2.send("Ви підключені. Починайте спілкування.".encode('utf-8'))
+    client1.send("Другий клієнт підключився. Починайте спілкування.".encode('utf-8'))
+
+    while True:
+        handle_client(client1, client2)
+        handle_client(client2, client1)
+
+if __name__ == "__main__":
+    main()
+import socket
+import threading
+
+def receive_messages(client):
+    while True:
+        try:
+            message = client.recv(1024).decode('utf-8')
+            print(message)
+        except:
+            print("З'єднання з сервером втрачено.")
+            break
+
+def main():
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect(('localhost', 5555))
+
+    name = input("Введіть ваше ім'я: ")
+    client.send(name.encode('utf-8'))
+
+    threading.Thread(target=receive_messages, args=(client,)).start()
+
+    while True:
+        message = input()
+        if message.lower() == 'вийти':
+            break
+        client.send(f"{name}: {message}".encode('utf-8'))
+
+    client.close()
+
+if __name__ == "__main__":
+    main()
+
+
+#3
+
+import socket
+import threading
+
+def send_message(from_client, to_client):
+    while True:
+        try:
+            message = from_client.recv(1024).decode('utf-8')
+            if not message:
+                break
+            to_client.send(message.encode('utf-8'))
+        except:
+            break
+
+def main():
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind(('localhost', 5555))
+    server.listen(2)
+    print("Сервер запущено. Очікування підключень...")
+
+    client1, addr1 = server.accept()
+    print(f"Підключено клієнта 1: {addr1}")
+    client1.send("Ви підключені. Очікування другого клієнта...".encode('utf-8'))
+
+    client2, addr2 = server.accept
+
