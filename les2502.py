@@ -296,3 +296,49 @@ def main():
 if __name__ == "__main__":
     main()
 
+###
+import threading
+
+numbers = []
+input_done = threading.Event()
+
+def input_numbers():
+    print("Вводьте числа (порожній рядок для завершення):")
+    while True:
+        inp = input("Число: ")
+        if inp == "":
+            break
+        try:
+            num = float(inp)
+            numbers.append(num)
+        except ValueError:
+            print("Будь ласка, введіть число.")
+    input_done.set()  # Сигнал, що введення завершено
+
+def calculate_sum():
+    input_done.wait()
+    total = sum(numbers)
+    print(f"Сума чисел: {total}")
+
+def calculate_average():
+    input_done.wait()
+    if numbers:
+        avg = sum(numbers) / len(numbers)
+        print(f"Середнє арифметичне: {avg}")
+    else:
+        print("Список порожній, неможливо обчислити середнє.")
+
+# Створення потоків
+input_thread = threading.Thread(target=input_numbers)
+sum_thread = threading.Thread(target=calculate_sum)
+avg_thread = threading.Thread(target=calculate_average)
+
+# Запуск потоків
+input_thread.start()
+sum_thread.start()
+avg_thread.start()
+
+# Очікування завершення
+input_thread.join()
+sum_thread.join()
+avg_thread.join()
