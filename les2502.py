@@ -190,4 +190,109 @@ def main():
 if __name__ == "__main__":
     main()
 
+###
+import json
+import pickle
+
+bands = {}
+
+# Додати новий гурт
+def add_band(name):
+    if name not in bands:
+        bands[name] = []
+        print(f"Гурт '{name}' додано.")
+    else:
+        print(f"Гурт '{name}' вже існує.")
+
+# Додати альбом до гурту
+def add_album(band_name, album_name):
+    if band_name in bands:
+        bands[band_name].append(album_name)
+        print(f"Альбом '{album_name}' додано до гурту '{band_name}'.")
+    else:
+        print(f"Гурту '{band_name}' не існує. Спочатку додайте гурт.")
+
+# Зберегти в JSON
+def save_json(filename='bands.json'):
+    try:
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(bands, f, ensure_ascii=False, indent=4)
+        print("Дані збережено у форматі JSON.")
+    except Exception as e:
+        print(f"Помилка при збереженні JSON: {e}")
+
+# Завантажити з JSON
+def load_json(filename='bands.json'):
+    global bands
+    try:
+        with open(filename, 'r', encoding='utf-8') as f:
+            bands = json.load(f)
+        print("Дані завантажено з JSON.")
+    except FileNotFoundError:
+        print("Файл не знайдено.")
+    except Exception as e:
+        print(f"Помилка при завантаженні JSON: {e}")
+
+# Зберегти в pickle
+def save_pickle(filename='bands.pkl'):
+    try:
+        with open(filename, 'wb') as f:
+            pickle.dump(bands, f)
+        print("Дані збережено у форматі pickle.")
+    except Exception as e:
+        print(f"Помилка при збереженні pickle: {e}")
+
+# Завантажити з pickle
+def load_pickle(filename='bands.pkl'):
+    global bands
+    try:
+        with open(filename, 'rb') as f:
+            bands = pickle.load(f)
+        print("Дані завантажено з pickle.")
+    except FileNotFoundError:
+        print("Файл не знайдено.")
+    except Exception as e:
+        print(f"Помилка при завантаженні pickle: {e}")
+
+#меню
+def main():
+    while True:
+        print("\nМеню:")
+        print("1. Додати гурт")
+        print("2. Додати альбом")
+        print("3. Зберегти у JSON")
+        print("4. Завантажити з JSON")
+        print("5. Зберегти у Pickle")
+        print("6. Завантажити з Pickle")
+        print("7. Показати всі дані")
+        print("8. Вийти")
+
+        choice = input("Ваш вибір: ")
+
+        if choice == '1':
+            name = input("Назва гурту: ")
+            add_band(name)
+        elif choice == '2':
+            band = input("Назва гурту: ")
+            album = input("Назва альбому: ")
+            add_album(band, album)
+        elif choice == '3':
+            save_json()
+        elif choice == '4':
+            load_json()
+        elif choice == '5':
+            save_pickle()
+        elif choice == '6':
+            load_pickle()
+        elif choice == '7':
+            for band, albums in bands.items():
+                print(f"{band}: {', '.join(albums) if albums else 'без альбомів'}")
+        elif choice == '8':
+            print("До зустрічі!")
+            break
+        else:
+            print("Невірний вибір. Спробуйте ще раз.")
+
+if __name__ == "__main__":
+    main()
 
