@@ -29,5 +29,74 @@ SELECT * FROM OVOCHIFRUKTY WHERE typ = 'Овоч' AND kolir = 'зелений';
 
 
 
+SELECT * FROM OVOCHIFRUKTY
+WHERE TYP = 'овоч' AND kalorijnist < 50;
+
+SELECT * FROM OVOCHIFRUKTY
+WHERE TYP = 'фрукт' AND kalorijnist BETWEEN 50 AND 100;
+
+SELECT * FROM OVOCHIFRUKTY
+WHERE TYP = 'овоч' AND LOWER(nazva) LIKE '%капуста%';
+
+SELECT * FROM OVOCHIFRUKTY
+WHERE LOWER(opis) LIKE '%гемоглобін%';
+
+SELECT * FROM OVOCHIFRUKTY
+WHERE kolir IN ('жовтий','червоний');
+
+SELECT COUNT(*) AS kilkist_ovochiv
+FROM OVOCHIFRUKTY
+WHERE TYP = 'овоч';
+
+SELECT COUNT(*) AS kilkist_fruktiv
+FROM OVOCHIFRUKTY
+WHERE TYP ='фрукт';
+
+SELECT COUNT(*) AS kilkist_zhovtykh
+FROM OVOCHIFRUKTY
+WHERE kolir = 'жовтий';
+
+SELECT kolir, COUNT(*) AS kilkist
+FROM OVOCHIFRUKTY
+GROUP BY kolir;
+
+SELECT kolir
+FROM (
+	SELECT kolir, COUNT(*) AS kilkist
+	FROM OVOCHIFRUKTY
+	GROUP BY kolir
+) AS pidrahunok
+ORDER BY kilkist ASC
+LIMIT 1;
+
+SELECT kolir 
+FROM (
+	SELECT kolir, COUNT(*) AS kilkist
+	FROM OVOCHIFRUKTY
+	GROUP BY kolir
+) AS pidrahunok
+ORDER BY kilkist DESC
+LIMIT 1;
+
+SELECT MIN(kalorijnist) AS minimalna_kalorijnist
+FROM OVOCHIFRUKTY;
+
+SELECT MAX(kalorijnist) AS maksimalna_kalorijnist
+FROM OVOCHIFRUKTY;
+
+SELECT AVG(kalorijnist) AS serednya_kalorijnist
+FROM OVOCHIFRUKTY;
+
+SELECT *
+FROM OVOCHIFRUKTY
+WHERE TYP = 'фрукт'
+ORDER BY kalorijnist ASC
+LIMIT 1;
+
+SELECT *
+FROM OVOCHIFRUKTY
+WHERE TYP = 'фрукт'
+ORDER BY kalorijnist DESC
+LIMIT 1;
 
 
